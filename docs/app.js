@@ -62,7 +62,7 @@ const queueMusic = [
   },
 ];
 
-let favorites = [];
+/* ============FUNTION INTERACT MUSIC SONG============= */
 
 function initializeAudioPlayer(
   playMusicId,
@@ -352,6 +352,59 @@ function setAudioDuration(audioElement, durationElement) {
     durationElement.textContent = formattedDuration;
   });
 }
+
+/* ============FUNTION LIKED INTERACTION============= */
+
+let favorites = [];
+
+function toggleLike(songName, songSrc, likeButtonId) {
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  const index = favorites.findIndex((item) => item.name === songName);
+  if (index === -1) {
+    // Add new song to favourite list
+    favorites.push({ name: songName, src: songSrc });
+    document.getElementById(likeButtonId).classList.add("liked");
+    showToast("You liked this song");
+  } else {
+    // delete song from favorite list
+    favorites.splice(index, 1);
+    document.getElementById(likeButtonId).classList.remove("liked");
+    showToast("You unliked this song");
+  }
+  // save favorite song to localStorage
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}
+
+function addLikedClassToButtons() {
+  // get favorites playlist from localStorage
+
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  queueMusic.forEach((item, index) => {
+    const likeButton = document.getElementById(`likeButton${index}`);
+    // Check if item is in the list
+    if (favorites.some((favorite) => favorite.name === item.name)) {
+      likeButton.classList.add("liked");
+    }
+  });
+}
+
+// Load favorites from localStorage if available
+if (!favorites && localStorage.getItem("favorites")) {
+  favorites = JSON.parse(localStorage.getItem("favorites"));
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  function checkLocalStorageVariable(variableName) {
+    // check variable if exist in local storage
+    return localStorage.getItem(variableName) !== null;
+  }
+  const hasFavorites = checkLocalStorageVariable("favorites");
+  console.log(hasFavorites);
+  // only enforce 'liked' and pop up notification when there is no favorite song
+  if (hasFavorites) {
+    addLikedClassToButtons();
+  }
+});
 
 // Call the function with your musicHome array
 generateMusicCards(musicHome);
