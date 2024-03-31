@@ -338,6 +338,21 @@ function renderMusicHomePage() {
   }
 }
 
+function formatTime(time) {
+  var minutes = Math.floor(time / 60);
+  var seconds = Math.floor(time % 60);
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+  return minutes + ":" + seconds;
+}
+
+function setAudioDuration(audioElement, durationElement) {
+  audioElement.addEventListener("loadedmetadata", function () {
+    var durationInSeconds = audioElement.duration;
+    var formattedDuration = formatTime(durationInSeconds);
+    durationElement.textContent = formattedDuration;
+  });
+}
+
 // Call the function with your musicHome array
 generateMusicCards(musicHome);
 generateQueue(queueMusic);
