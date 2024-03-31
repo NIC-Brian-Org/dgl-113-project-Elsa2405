@@ -428,3 +428,20 @@ function showToast(messager) {
 generateMusicCards(musicHome);
 generateQueue(queueMusic);
 renderMusicHomePage();
+
+// function changAvatar() {
+
+const cookies = document.cookie;
+
+console.log(cookies);
+const login = cookies.split("=");
+
+if (cookies) {
+  const loginAvatar = document.getElementById("loginAvatar");
+  console.log(loginAvatar);
+  loginAvatar.innerHTML = `<div class="profile-picture">
+    <img src='assets/image/myphoto.jpeg'>
+</div>`;
+  // } else {
+  //     document.getElementById("loginAvatar.innerHTML") = "<a href='login.html'>Log in</a>";
+}
