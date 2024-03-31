@@ -392,7 +392,6 @@ function addLikedClassToButtons() {
 if (!favorites && localStorage.getItem("favorites")) {
   favorites = JSON.parse(localStorage.getItem("favorites"));
 }
-
 document.addEventListener("DOMContentLoaded", function () {
   function checkLocalStorageVariable(variableName) {
     // check variable if exist in local storage
@@ -405,6 +404,25 @@ document.addEventListener("DOMContentLoaded", function () {
     addLikedClassToButtons();
   }
 });
+
+/*=============FUNCTION POP UP NOTIFICATION============*/
+
+function showToast(messager) {
+  Toastify({
+    text: messager,
+    duration: 3000, // Duration in milliseconds
+    close: true, // Whether to enable the close button
+    theme: "colored",
+    transition: "Bounce",
+    gravity: "bottom",
+    position: "right",
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    stopOnFocus: true,
+    hideProgressBar: false,
+  }).showToast();
+}
 
 // Call the function with your musicHome array
 generateMusicCards(musicHome);
