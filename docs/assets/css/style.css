@@ -303,6 +303,8 @@ h4:hover {
 
 .right-nav .profile-picture img {
   width: 55px;
+  height: 55px;
+  object-fit: cover;
   border-radius: 50%;
   box-shadow: 0px 0px 8px #f3b2b2;
   transition: all 0.2s ease-in-out;

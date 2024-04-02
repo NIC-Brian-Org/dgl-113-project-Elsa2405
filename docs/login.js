@@ -5,6 +5,7 @@ const user = [
     name: "elsa",
     email: "admin@gmail.com",
     password: "123456",
+    mgUrl: "assets/image/avatar.jpg",
   },
   {
     id: 2,

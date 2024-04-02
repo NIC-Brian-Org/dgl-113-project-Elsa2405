@@ -1,5 +1,21 @@
 "use strict";
 
+const user = [
+  {
+    id: 1,
+    name: "Elsa",
+    email: "admin@gmail.com",
+    password: "123456",
+    imgUrl: "assets/image/avatar.jpg",
+  },
+  {
+    id: 2,
+    name: "emily",
+    email: "admin1@gmail.com",
+    password: "1234567",
+  },
+];
+
 const musicHome = [
   {
     id: 1,
@@ -431,17 +447,24 @@ renderMusicHomePage();
 
 // function changAvatar() {
 
-const cookies = document.cookie;
-
-console.log(cookies);
-const login = cookies.split("=");
-
-if (cookies) {
-  const loginAvatar = document.getElementById("loginAvatar");
-  console.log(loginAvatar);
-  loginAvatar.innerHTML = `<div class="profile-picture">
-    <img src='assets/image/myphoto.jpeg'>
-</div>`;
-  // } else {
-  //     document.getElementById("loginAvatar.innerHTML") = "<a href='login.html'>Log in</a>";
+const cookie = document.cookie;
+const login = cookie.split("=");
+console.log(cookie);
+if (cookie) {
+  const finUser = user.find((email) => email.email === login[1]);
+  document.getElementById(
+    "loginAvatar"
+  ).innerHTML = `<div style="display:flex; justify-content: space-between; align-items: center; ">
+      <div class="profile-picture" style="margin-right: 20px">
+        <img src=${finUser.imgUrl}>
+      </div>
+      <div onclick='logout()'>Hello! ${finUser.name}</div>
+    </div>`;
+  document.getElementById("loginAvatar").style = `border:none`;
 }
+
+// function logout() {
+//   document.cookie = "username=;  path=/docs;";
+
+//   window.location.href = "login.html";
+// }
