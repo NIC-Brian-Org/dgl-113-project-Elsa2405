@@ -458,13 +458,13 @@ if (cookie) {
       <div class="profile-picture" style="margin-right: 20px">
         <img src=${finUser.imgUrl}>
       </div>
-      <div onclick='logout()'>Hello! ${finUser.name}</div>
+      <div style="cursor: pointer" onclick='logout()'>Hello! ${finUser.name}</div>
     </div>`;
   document.getElementById("loginAvatar").style = `border:none`;
 }
 
-// function logout() {
-//   document.cookie = "username=;  path=/docs;";
+function logout() {
+  document.cookie = "username=;  path=/docs;";
 
-//   window.location.href = "login.html";
-// }
+  window.location.href = "login.html";
+}
