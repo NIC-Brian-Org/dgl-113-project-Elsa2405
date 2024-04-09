@@ -10,7 +10,7 @@ const user = [
   },
   {
     id: 2,
-    name: "emily",
+    name: "Emily",
     email: "admin1@gmail.com",
     password: "1234567",
   },
@@ -354,7 +354,7 @@ function generateMusicCards(musicHome) {
   document.getElementById("product-card").innerHTML = html;
 }
 
-function renderMusicHomePage() {
+function renderFunctionMusicCard() {
   for (let indexId = 1; indexId <= musicHome.length; indexId++) {
     initializeAudioPlayer(
       `play-music${indexId}`,
@@ -416,9 +416,7 @@ function addLikedClassToButtons() {
 }
 
 // Load favorites from localStorage if available
-if (!favorites && localStorage.getItem("favorites")) {
-  favorites = JSON.parse(localStorage.getItem("favorites"));
-}
+
 document.addEventListener("DOMContentLoaded", function () {
   function checkLocalStorageVariable(variableName) {
     // check variable if exist in local storage
@@ -432,7 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-/*=============FUNCTION POP UP NOTIFICATION============*/
+/*=============FUNCTION POP UP NOTIFICATION ONLY IN SINGLE PLAY LIST============*/
 
 function showToast(messager) {
   Toastify({
@@ -725,7 +723,7 @@ if (window.location.pathname.includes("SinglePlaylistScreen")) {
 // Call the function with your musicHome array
 generateMusicCards(musicHome);
 generateQueue(queueMusic);
-renderMusicHomePage();
+renderFunctionMusicCard();
 displayLoginInfo(cookie, user, login, currentDirectory);
 
 // function changAvatar() {

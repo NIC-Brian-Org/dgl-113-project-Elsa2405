@@ -160,3 +160,7 @@ button {
     border-radius: 76% 24% 33% 67% / 68% 56% 44% 32%;
   }
 }
+
+.toast-close {
+  width: auto;
+}

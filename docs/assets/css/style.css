@@ -1525,7 +1525,7 @@ hr {
   height: 100%;
   width: 70%;
   flex-direction: row;
-  flex-wrap: no-wrap;
+  /* flex-wrap: no-wrap; */
   justify-content: space-between;
   align-items: center;
 }

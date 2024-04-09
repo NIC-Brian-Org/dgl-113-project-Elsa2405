@@ -9,7 +9,7 @@ const user = [
   },
   {
     id: 2,
-    name: "emily",
+    name: "Emily",
     email: "admin1@gmail.com",
     password: "1234567",
   },
