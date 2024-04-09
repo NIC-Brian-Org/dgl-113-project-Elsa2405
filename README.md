@@ -15,9 +15,13 @@ As the rapid growth of entertainment in general and also as a music lover person
 
 Below are four features that I plan to implement:
 
-1. Audio Player Controls: On the original website, users cannot interact with the music, so I will use JavaScript to create custom audio players with features such as play, pause, volume control, progress bar, and track navigation. These controls allow users to interact with the music playback on the website seamlessly.
-2. Dynamic Playlist: Create dynamic playlists that allow users to add, remove, and reorder songs. This feature enhances user engagement by giving them control over the content they listen to, creating a personalized experience.
-3. Integration with APIs: Nowadays, many famous music libraries such as Spotify, SoundCloud, Youtube and so on that users want to access directly from one application, JavaScript can be used to integrate with various APIs such as music streaming services or lyrics databases. This integration allows users to access a wide range of music content directly from the website, enriching the user experience with additional functionalities.
-4. Social Sharing and Interaction: There are couple of heart icon button on the original website that give me an idea to enriching user experience which is implement social sharing buttons and features such as comments or likes, enabling users to share their favorite songs or interact with other users. This fosters community engagement and encourages users to interact with the website beyond just listening to music.
+1. Audio Player Controls: On the original website, users cannot interact with the music, so I will use JavaScript to create custom audio players with features such as play, pause, volume control, progress bar, and track navigation one by one. These controls allow users to interact with the music playback on the website seamlessly.
+2. Favourite Playlist: Create dynamic playlists that allow users to add, remove songs by click to the liked icons, next and previous control in the . This feature enhances user engagement by giving them control over the content they listen to, creating a personalized experience.
+3. Login with cookie: Create one more log in html page, use JavaScript to check cookie user if cookie exist, main page will appear component user account, if user does not log in, main page will show log in button.
+4. Pop up notification: A response signal whenever users click on the buttons to let user be aware of what they are interacting with the buttons, in particular, liked button.
 
 In conclusion, build an enjoyable and fun music website to increase user sastification is my oretation in this project. Though try to focus in detail but cannot avoid any mistake as I haven’t using JavaScript to build a dynamic website before, I hope it will work well. Also, eagerly awaiting for your value feedback, comment and advices to make this project better. Thank you.
+
+#Link:
+Homepage
+https://nic-brian-org.github.io/dgl-113-project-Elsa2405/

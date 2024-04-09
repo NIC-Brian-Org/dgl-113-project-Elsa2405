@@ -2,7 +2,7 @@
 const user = [
   {
     id: 1,
-    name: "elsa",
+    name: "Elsa",
     email: "admin@gmail.com",
     password: "123456",
     imgUrl: "assets/image/avatar.jpg",
@@ -42,7 +42,7 @@ document
         expiresDate.setDate(expiresDate.getDate() + 1);
         var expires = expiresDate.toUTCString();
         document.cookie =
-          "username=" + foundUser.email + "; expires=" + expires;
+          "username=" + foundUser.email + "; expires=" + expires + ";path=/";
 
         // Redirect or perform other action
         window.location.href = "index.html";

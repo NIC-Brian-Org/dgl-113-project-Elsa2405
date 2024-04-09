@@ -78,6 +78,13 @@ const queueMusic = [
   },
 ];
 
+var currentPath = window.location.pathname;
+var currentDirectory = currentPath.substring(0, currentPath.lastIndexOf("/"));
+
+const cookie = document.cookie;
+const login = cookie.split("=");
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
 /* ============FUNTION INTERACT MUSIC SONG============= */
 
 function initializeAudioPlayer(
@@ -107,9 +114,13 @@ function initializeAudioPlayer(
     const allAudios = document.getElementsByTagName("audio");
     for (let i = 0; i < allAudios.length; i++) {
       if (allAudios[i] !== audio) {
+        console.log(allAudios[i]);
+        console.log(audio, "idaudio");
         allAudios[i].pause();
         const playPauseBtnId = "playPauseBtn" + (i + 1);
         const playPauseBtn = document.getElementById(playPauseBtnId);
+        console.log(playPauseBtn);
+        console.log(playPauseBtnId, "pbtnid");
         audio.currentTime = 0;
         playPauseBtn.innerHTML = '<i class="fas fa-play-circle"></i>';
       }
@@ -181,8 +192,14 @@ function initializeAudioPlayer(
 
   setAudioDuration(audio, time);
 }
+
+function formatTime(time) {
+  var minutes = Math.floor(time / 60);
+  var seconds = Math.floor(time % 60);
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+  return minutes + ":" + seconds;
+}
 function renderMusicPlayList() {
-  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   for (let indexId = 0; indexId < favorites.length; indexId++) {
     setAudioDuration(
       document.getElementById(`audio${indexId}`),
@@ -354,13 +371,6 @@ function renderMusicHomePage() {
   }
 }
 
-function formatTime(time) {
-  var minutes = Math.floor(time / 60);
-  var seconds = Math.floor(time % 60);
-  seconds = seconds < 10 ? "0" + seconds : seconds;
-  return minutes + ":" + seconds;
-}
-
 function setAudioDuration(audioElement, durationElement) {
   audioElement.addEventListener("loadedmetadata", function () {
     var durationInSeconds = audioElement.duration;
@@ -371,10 +381,7 @@ function setAudioDuration(audioElement, durationElement) {
 
 /* ============FUNTION LIKED INTERACTION============= */
 
-let favorites = [];
-
 function toggleLike(songName, songSrc, likeButtonId) {
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   const index = favorites.findIndex((item) => item.name === songName);
   if (index === -1) {
     // Add new song to favourite list
@@ -386,15 +393,19 @@ function toggleLike(songName, songSrc, likeButtonId) {
     favorites.splice(index, 1);
     document.getElementById(likeButtonId).classList.remove("liked");
     showToast("You unliked this song");
+    console.log(window.location.pathname);
+    setTimeout(() => {
+      if (window.location.pathname === "/docs/SinglePlaylistScreen.html") {
+        location.reload();
+      }
+    }, 500);
   }
+
   // save favorite song to localStorage
   localStorage.setItem("favorites", JSON.stringify(favorites));
 }
 
 function addLikedClassToButtons() {
-  // get favorites playlist from localStorage
-
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   queueMusic.forEach((item, index) => {
     const likeButton = document.getElementById(`likeButton${index}`);
     // Check if item is in the list
@@ -439,32 +450,304 @@ function showToast(messager) {
     hideProgressBar: false,
   }).showToast();
 }
+if (window.location.pathname.includes("SinglePlaylistScreen")) {
+  const countMusic = document.getElementById("count_music");
+  countMusic.innerText = `${favorites.length} Tracks | 128 Albums`;
+  //single playlist
+  function initializeMusicPlayer() {
+    const audio = document.getElementById("audio");
+    const playlistElement = document.getElementById("playslist");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const playPauseIcon = document.getElementById("playPauseIcon");
+    const currentTime = document.getElementById("currentTime");
+    const duration = document.getElementById("duration");
+    const slider = document.getElementById("myRange");
+    const volumeIcon = document.getElementById("volumeIconId");
+    const volumeRange = document.getElementById("volumeRange");
+    const nameMusicElement = document.getElementById("name-music");
+    const nameAuthorElement = document.getElementById("name-author");
+    const songImageElement = document.getElementById("song-image");
+
+    let currentTrackIndex = 0;
+
+    // User favorites data to create playlist
+    const playlist = favorites.map((favorite) => ({
+      name: favorite.name,
+      src: favorite.src,
+    }));
+
+    function loadTrack(index) {
+      const track = playlist[index];
+      audio.src = track.src;
+    }
+
+    function playTrack() {
+      var removeFooter = document.getElementById("footerFavorite");
+      removeFooter.classList.remove("displayed");
+      playPauseIcon.classList.remove("fa-play-circle");
+      playPauseIcon.classList.add("fa-pause-circle");
+
+      audio.play();
+    }
+
+    function pauseTrack() {
+      playPauseIcon.classList.remove("fa-pause-circle");
+      playPauseIcon.classList.add("fa-play-circle");
+      audio.pause();
+    }
+
+    playPauseBtn.addEventListener("click", function () {
+      if (audio.paused) {
+        playTrack();
+      } else {
+        pauseTrack();
+      }
+    });
+
+    // Add 'input' event for slider
+    slider.addEventListener("input", function () {
+      var seekTime = audio.duration * (slider.value / 100);
+      audio.currentTime = seekTime;
+      currentTime.textContent = formatTime(seekTime);
+    });
+
+    // Event listener for timeupdate to update slider and current time
+    audio.addEventListener("timeupdate", function () {
+      var curTime = audio.currentTime;
+      var totalTime = audio.duration;
+      currentTime.textContent = formatTime(curTime);
+      duration.textContent = formatTime(totalTime);
+      slider.value = (curTime / totalTime) * 100;
+      // The play icon button changed to pause icon button when the song reach the end
+      if (audio.ended) {
+        playPauseBtn.innerHTML = '<i class="fas fa-play-circle"></i>';
+      }
+    });
+
+    // Volumn handling
+    volumeIcon.addEventListener("click", function () {
+      if (audio.volume === 0) {
+        audio.volume = volumeRange.value / 100;
+        volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+      } else {
+        audio.volume = 0;
+        volumeIcon.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+      }
+    });
+
+    volumeRange.addEventListener("input", function () {
+      audio.volume = volumeRange.value / 100;
+      if (audio.volume === 0) {
+        volumeIcon.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+      } else {
+        volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+      }
+    });
+
+    // Function to change default time to mm:ss format
+    function formatTime(time) {
+      var minutes = Math.floor(time / 60);
+      var seconds = Math.floor(time % 60);
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      return minutes + ":" + seconds;
+    }
+
+    function selectTrack(index) {
+      currentTrackIndex = index;
+      loadTrack(index);
+      playTrack();
+      renderPlaylist(); // Update the current
+    }
+
+    function renderPlaylist() {
+      playlistElement.innerHTML = "";
+      let isPlaying = false;
+
+      favorites.forEach((favorite, index) => {
+        // Search favourite song in queueMusic list
+        const foundMusic = queueMusic.find(
+          (music) => music.name === favorite.name
+        );
+
+        // Check if the song can be found
+        if (foundMusic) {
+          // Create new div
+          const playlistItem = document.createElement("div");
+          playlistItem.classList.add("playlist-item");
+
+          // Create content for new div of a song which is just created
+          playlistItem.innerHTML = `
+                  <div class="left">
+                      <div>${index + 1}</div>
+                      <div>
+                          <img src="${foundMusic.imgUrl}" />
+                          <audio id="audio${index}" src="${
+            foundMusic.src
+          }" hidden></audio>
+                          <div class="play-btn" id="play_btn_${index}">
+                              <i class="fas fa-play"></i>
+                          </div>
+                      </div>
+                      <div>
+                          <h5>${foundMusic.name}</h5>
+                          <p>${foundMusic.author}</p>
+                      </div>
+                  </div>
+                  <div class="center"  id="full_music${index}">0:00</div>
+                  <div class="right">
+                      <div id="likeButton${index}" class="liked">
+                          <i class="fa fa-heart"  onclick="toggleLike('${
+                            foundMusic.name
+                          }', '${foundMusic.src}', 'likeButton${index}')"></i>
+                      </div>
+                      <div>
+                          <i class="fas fa-plus"></i>
+</div>
+                  </div>
+              `;
+
+          // Add element to playlistElement
+          playlistElement.appendChild(playlistItem);
+
+          // Get play-btn element just created
+          const playBtn = document.getElementById(`play_btn_${index}`);
+
+          // Add click event to play or pause
+          playBtn.addEventListener("click", () => {
+            updateSongDescription(
+              foundMusic.name,
+              foundMusic.author,
+              foundMusic.imgUrl
+            );
+            if (!isPlaying) {
+              // If there is no song playing
+
+              loadTrack(index);
+              playTrack();
+              isPlaying = true; // Set default status is true
+              playBtn.innerHTML = '<i class="fas fa-pause"></i>'; // Change the icon to pause
+            } else {
+              // If there is a song playing
+              if (currentTrackIndex === index) {
+                // Check if the current song is the chosen song?
+
+                pauseTrack();
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+              } else {
+                const currentPlayingBtn = document.getElementById(
+                  `play_btn_${currentTrackIndex}`
+                );
+                pauseTrack();
+                loadTrack(index);
+                playTrack();
+                isPlaying = true;
+                currentPlayingBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+              }
+            }
+          });
+        }
+      });
+      renderMusicPlayList();
+    }
+
+    function updateSongDescription(songName, authorName, imageUrl) {
+      nameMusicElement.innerHTML = `<h3>${songName}</h3>`;
+
+      nameAuthorElement.textContent = authorName;
+      songImageElement.innerHTML = `<img src="${imageUrl}" alt="Song Image" />`;
+    }
+
+    audio.addEventListener("ended", () => {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      loadTrack(currentTrackIndex);
+      playTrack();
+      renderPlaylist();
+    });
+
+    // Get prev btn and next btn from HTML
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+
+    // Add click event button to prev button
+    prevButton.addEventListener("click", function () {
+      currentTrackIndex =
+        (currentTrackIndex - 1 + playlist.length) % playlist.length;
+      const foundMusic = queueMusic.find(
+        (music) => music.name === playlist[currentTrackIndex].name
+      );
+      loadTrack(currentTrackIndex);
+      playTrack();
+      updateSongDescription(
+        foundMusic.name,
+        foundMusic.author,
+        foundMusic.imgUrl
+      );
+      renderPlaylist();
+    });
+
+    // Add click event for next button
+    nextButton.addEventListener("click", function () {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      const foundMusic = queueMusic.find(
+        (music) => music.name === playlist[currentTrackIndex].name
+      );
+      loadTrack(currentTrackIndex);
+      playTrack();
+      updateSongDescription(
+        foundMusic.name,
+        foundMusic.author,
+        foundMusic.imgUrl
+      );
+      renderPlaylist();
+    });
+
+    renderPlaylist();
+  }
+
+  function renderMusicPlayList() {
+    for (let indexId = 0; indexId < favorites.length; indexId++) {
+      setAudioDuration(
+        document.getElementById(`audio${indexId}`),
+        document.getElementById(`full_music${indexId}`)
+      );
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeMusicPlayer();
+  });
+
+  displayLoginInfo(cookie, user, login, currentDirectory);
+}
 
 // Call the function with your musicHome array
 generateMusicCards(musicHome);
 generateQueue(queueMusic);
 renderMusicHomePage();
+displayLoginInfo(cookie, user, login, currentDirectory);
 
 // function changAvatar() {
 
-const cookie = document.cookie;
-const login = cookie.split("=");
-console.log(cookie);
-if (cookie) {
-  const finUser = user.find((email) => email.email === login[1]);
-  document.getElementById(
-    "loginAvatar"
-  ).innerHTML = `<div style="display:flex; justify-content: space-between; align-items: center; ">
-      <div class="profile-picture" style="margin-right: 20px">
-        <img src=${finUser.imgUrl}>
-      </div>
-      <div style="cursor: pointer" onclick='logout()'>Hello! ${finUser.name}</div>
-    </div>`;
-  document.getElementById("loginAvatar").style = `border:none`;
+function displayLoginInfo(cookie, user, login, currentDirectory) {
+  if (cookie) {
+    const findUser = user.find((email) => email.email === login[1]);
+    const imgprofile = findUser?.imgUrl
+      ? findUser?.imgUrl
+      : currentDirectory + "/assets/image/profile.jpg";
+    document.getElementById("loginAvatar").innerHTML = `
+          <div style="display:flex; justify-content: space-between; align-items: center; ">
+              <div class="profile-picture" style="margin-right: 20px">
+                  <img src="${imgprofile}">
+              </div>
+              <div style="cursor: pointer" onclick="logout()">Hello! ${findUser?.name}</div>
+          </div>`;
+    document.getElementById("loginAvatar").style.border = "none";
+  }
 }
 
 function logout() {
-  document.cookie = "username=;  path=/docs;";
-
+  document.cookie = "username=;  path=/;";
   window.location.href = "login.html";
 }
